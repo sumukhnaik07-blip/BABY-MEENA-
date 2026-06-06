@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scratch & reveal!! 🎁</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Pacifico&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:linear-gradient(135deg,#fff5e6,#fff0f5,#f0f8ff);min-height:100vh;font-family:'Nunito',sans-serif;padding:40px 18px;overflow-x:hidden}
+.sticker-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.stk{position:absolute;animation:floatStk var(--dur) ease-in-out infinite alternate;opacity:0.13}
+@keyframes floatStk{0%{transform:translateY(0) rotate(var(--r0))}100%{transform:translateY(-15px) rotate(var(--r1))}}
+.header{text-align:center;position:relative;z-index:2;margin-bottom:36px}
+.chip{display:inline-block;background:#ffe0eb;color:#e8567a;font-size:0.68rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;padding:5px 14px;border-radius:99px;margin-bottom:10px}
+.title{font-family:'Pacifico',cursive;font-size:2.4rem;color:#e8567a;text-shadow:2px 2px 0 #ffc0cb;margin-bottom:6px}
+.subtitle{font-family:'Caveat',cursive;font-size:1.2rem;color:#c0607a}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:440px;margin:0 auto;position:relative;z-index:2}
+.sc{position:relative;border-radius:20px;overflow:hidden;aspect-ratio:1;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.08)}
+.reveal{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;text-align:center;background:#fff;z-index:1}
+.rev-emoji{font-size:2rem;margin-bottom:6px}
+.rev-text{font-family:'Caveat',cursive;font-size:0.98rem;color:#5a3a3a;line-height:1.45}
+.cover{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.5s ease,transform 0.5s ease;background:linear-gradient(135deg,var(--c1),var(--c2));border-radius:20px}
+.cover.gone{opacity:0;transform:scale(1.06);pointer-events:none}
+.cover-emoji{font-size:2.2rem}
+.cover-hint{font-size:0.6rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-top:6px}
+.counter{text-align:center;position:relative;z-index:2;margin:24px auto;font-family:'Caveat',cursive;font-size:1.15rem;color:#c0607a}
+.done-msg{display:none;text-align:center;position:relative;z-index:2;background:#fff;border-radius:24px;padding:32px 24px;max-width:360px;margin:0 auto;box-shadow:0 8px 32px rgba(232,86,122,0.12)}
+.done-title{font-family:'Pacifico',cursive;font-size:2rem;color:#e8567a;margin-bottom:12px}
+.done-body{font-family:'Caveat',cursive;font-size:1.15rem;color:#5a3a3a;line-height:1.7}
+.heart{display:inline-block;animation:hb 1.2s ease infinite;font-size:2.5rem;margin-top:12px}
+@keyframes hb{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+</style>
+</head>
+<body>
+<div class="sticker-bg" id="stbg"></div>
+<div class="header">
+  <p class="chip">🎁 10 secrets!!</p>
+  <h1 class="title">Scratch & Reveal!!</h1>
+  <p class="subtitle">Tap every card babyyyy 🥹 10 things Dadaaa wants you to knowww</p>
+</div>
+<div class="grid" id="grid"></div>
+<p class="counter" id="counter">0 / 10 revealed 🎀</p>
+<div class="done-msg" id="done-msg">
+  <div class="done-title">All done!! 🎉</div>
+  <p class="done-body">Every single one of these is trueeee babyyyy 💗<br>Every. Single. Day. Not just todayyyy.<br><br>Happy birthday my Baby Meenaaaa 🥹🎂</p>
+  <div class="heart">💗</div>
+  <p style="font-family:'Pacifico',cursive;font-size:1.3rem;color:#e8829a;margin-top:14px">Dadaaa 🤍</p>
+</div>
+
+<script>
+const cards=[
+  {emoji:'😭',text:"Your giggle is literally Dadaaa's favourite sound in the WHOLE world 💗",c1:'#ffb3c6',c2:'#ff8fab',icon:'🎵'},
+  {emoji:'🌍',text:"We are travelling EVERYWHERE babyyyy. Every 'one day' place. It's happening!! ✈️",c1:'#b5ead7',c2:'#57cc99',icon:'✈️'},
+  {emoji:'😭',text:"Your chubby cutie patootie cheeks omg I want to BITE THEM every time I see your pictures 💀",c1:'#ffd6a5',c2:'#ffb347',icon:'🍡'},
+  {emoji:'💀',text:"'Haunes' and 'bluud' are the greatest words ever created. You're a genius babyyyy 😭",c1:'#c9b1ff',c2:'#9b72cf',icon:'💬'},
+  {emoji:'🥹',text:"When you seek my attention in that soft baby way — I NOTICE every single time. Always always always 💗",c1:'#ffcfd2',c2:'#e8567a',icon:'🎀'},
+  {emoji:'👶',text:"I want a baby girl exactly like youuu 😭 chubby cheeks, silly words, full chaos. Exactly like youuu",c1:'#b5d8eb',c2:'#5ba4cf',icon:'🍼'},
+  {emoji:'💌',text:"Three years of messages and I STILL get excited every time you text me. That will never change 🥹",c1:'#fde8c8',c2:'#f4a261',icon:'💌'},
+  {emoji:'😤',text:"When you argue with me in that cute little tone 😭 baby I literally cannot focus you're too adorable",c1:'#d4f1f4',c2:'#75c9c8',icon:'😤'},
+  {emoji:'🌙',text:"Even on the hardest LDR days I have NEVER doubted you. Not even for one second babyyyy 💗",c1:'#e8c9f5',c2:'#c77dff',icon:'🌙'},
+  {emoji:'🤍',text:"You are my favourite person in the wholeee world. Today. Tomorrow. Forever. Kita harus menikah 💍",c1:'#ffb3c6',c2:'#e8567a',icon:'💍'}
+];
+
+let revealed=0;
+const grid=document.getElementById('grid');
+cards.forEach((c,i)=>{
+  const div=document.createElement('div');div.className='sc';
+  div.innerHTML=`<div class="reveal"><div class="rev-emoji">${c.emoji}</div><p class="rev-text">${c.text}</p></div>
+  <div class="cover" id="cv${i}" style="--c1:${c.c1};--c2:${c.c2}">
+    <div class="cover-emoji">${c.icon}</div>
+    <div class="cover-hint">tap me!!</div>
+  </div>`;
+  div.onclick=()=>{
+    const cv=document.getElementById('cv'+i);
+    if(cv.classList.contains('gone'))return;
+    cv.classList.add('gone');revealed++;
+    document.getElementById('counter').textContent=revealed+' / 10 revealed 🎀';
+    if(revealed===10)setTimeout(()=>{
+      document.getElementById('counter').style.display='none';
+      document.getElementById('done-msg').style.display='block';
+    },600);
+  };
+  grid.appendChild(div);
+});
+
+const stks=['🐻','🧸','🍓','🌸','⭐','🦋','🍰','💝','🎀','✨','🍡','🌙','💫','🐣','🌷','💕','🎪','🌈'];
+const bg=document.getElementById('stbg');
+for(let i=0;i<22;i++){
+  const s=document.createElement('div');s.className='stk';
+  s.textContent=stks[Math.floor(Math.random()*stks.length)];
+  s.style.cssText=`left:${Math.random()*95}%;top:${Math.random()*95}%;--dur:${(Math.random()*4+3).toFixed(1)}s;--r0:${(Math.random()*30-15).toFixed(0)}deg;--r1:${(Math.random()*30-15).toFixed(0)}deg;font-size:${(Math.random()*1.5+1.5).toFixed(1)}rem;animation-delay:${(Math.random()*3).toFixed(1)}s`;
+  bg.appendChild(s);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Find Dadaaa!! 🔍💗</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Pacifico&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:linear-gradient(160deg,#fff0f5,#fff8e1,#f0f8ff);font-family:'Nunito',sans-serif;min-height:100vh;overflow-x:hidden;user-select:none}
+.stk{position:fixed;font-size:1.4rem;opacity:0.12;animation:fs var(--d) ease-in-out infinite alternate;pointer-events:none;z-index:0}
+@keyframes fs{0%{transform:translateY(0) rotate(var(--r0))}100%{transform:translateY(-12px) rotate(var(--r1))}}
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center;z-index:10}
+.screen.hidden{display:none}
+.game-title{font-family:'Pacifico',cursive;font-size:clamp(2rem,8vw,3rem);color:#e8567a;text-shadow:3px 3px 0 #ffc0cb;margin-bottom:10px}
+.game-sub{font-family:'Caveat',cursive;font-size:1.25rem;color:#c0607a;margin-bottom:28px;line-height:1.6;max-width:320px}
+.big-emoji{font-size:4.5rem;display:block;margin-bottom:16px;animation:bounce 1s ease-in-out infinite alternate}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-12px)}}
+.start-btn{background:linear-gradient(135deg,#e8567a,#c04060);color:#fff;border:none;border-radius:99px;padding:16px 44px;font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(232,86,122,0.3);transition:transform 0.2s}
+.start-btn:active{transform:scale(0.95)}
+
+/* GAME */
+#game-screen{position:fixed;inset:0;display:none;flex-direction:column;z-index:10}
+#hud{padding:12px 18px;display:flex;justify-content:space-between;align-items:center;background:rgba(255,240,245,0.92);backdrop-filter:blur(6px);border-bottom:2px solid #ffd6e3;flex-shrink:0}
+.hud-item{font-family:'Nunito',sans-serif;font-weight:900;font-size:0.95rem;color:#c0607a;background:#ffe0eb;padding:5px 13px;border-radius:99px}
+.hud-score{font-family:'Pacifico',cursive;font-size:1.2rem;color:#e8567a}
+#round-label{text-align:center;padding:8px;font-family:'Caveat',cursive;font-size:1.1rem;color:#e8567a;font-weight:700;flex-shrink:0}
+#scene-wrap{flex:1;position:relative;overflow:hidden}
+#scene{width:100%;height:100%;position:relative;background:var(--scene-bg,#fff8f0)}
+.scene-item{position:absolute;font-size:var(--sz,2.2rem);cursor:pointer;transition:transform 0.15s;line-height:1}
+.scene-item:active{transform:scale(0.85)}
+.dadaaa-item{cursor:pointer}
+.found-ring{position:absolute;width:60px;height:60px;border-radius:50%;border:3px solid #e8567a;background:rgba(232,86,122,0.15);transform:translate(-50%,-50%);pointer-events:none;animation:ring 0.5s ease forwards}
+@keyframes ring{0%{transform:translate(-50%,-50%) scale(0.5);opacity:1}100%{transform:translate(-50%,-50%) scale(1.8);opacity:0}}
+.feedback-pop{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Pacifico',cursive;font-size:2rem;color:#e8567a;z-index:50;pointer-events:none;text-align:center;background:rgba(255,255,255,0.95);padding:16px 28px;border-radius:20px;box-shadow:0 8px 32px rgba(232,86,122,0.2);animation:popBig 1s ease forwards}
+@keyframes popBig{0%{opacity:0;transform:translate(-50%,-50%) scale(0.5)}40%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}80%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(0.9)}}
+.wrong-pop{position:fixed;font-family:'Caveat',cursive;font-size:1.3rem;color:#c04060;z-index:50;pointer-events:none;animation:wrongAnim 0.7s ease forwards;background:rgba(255,255,255,0.9);padding:8px 16px;border-radius:12px}
+@keyframes wrongAnim{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-40px)}}
+
+/* END */
+#end-screen{}
+.end-title{font-family:'Pacifico',cursive;font-size:2.3rem;color:#e8567a;text-shadow:3px 3px 0 #ffc0cb;margin-bottom:8px}
+.end-score{font-family:'Pacifico',cursive;font-size:3.5rem;color:#e8567a;margin:8px 0}
+.end-msg{font-family:'Caveat',cursive;font-size:1.2rem;color:#5a3a3a;line-height:1.7;max-width:300px;margin:10px 0}
+.heart{display:inline-block;animation:hb 1.2s ease infinite;font-size:2.5rem}
+@keyframes hb{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+</style>
+</head>
+<body>
+<div id="bg-stk"></div>
+
+<!-- START -->
+<div class="screen" id="start-screen">
+  <span class="big-emoji">🔍</span>
+  <h1 class="game-title">Find Dadaaa!!</h1>
+  <p class="game-sub">Dadaaa is hiding somewhere in each scene 🙈<br>Find him as fast as you can babyyyy!!<br>5 rounds — go go gooo!! 💗</p>
+  <button class="start-btn" onclick="startGame()">Find meee!! 🔍💗</button>
+</div>
+
+<!-- GAME -->
+<div id="game-screen">
+  <div id="hud">
+    <div class="hud-score">💗 <span id="score-disp">0</span></div>
+    <div class="hud-item">Round <span id="round-disp">1</span>/5</div>
+    <div class="hud-item" id="time-disp">15s</div>
+  </div>
+  <div id="round-label" id="round-lbl"></div>
+  <div id="scene-wrap">
+    <div id="scene"></div>
+  </div>
+</div>
+
+<!-- END -->
+<div class="screen hidden" id="end-screen">
+  <div class="end-title">You found meee!! 🎉</div>
+  <div class="heart">💗</div>
+  <div class="end-score" id="end-score"></div>
+  <p class="end-msg" id="end-msg"></p>
+  <p style="font-family:'Pacifico',cursive;font-size:1.3rem;color:#e8829a;margin-top:12px">Dadaaa 🤍</p>
+  <button class="start-btn" style="margin-top:20px" onclick="location.reload()">Play again!! 🔄</button>
+</div>
+
+<script>
+const ROUNDS = [
+  {
+    label: "🌸 Find Dadaaa in the garden!!",
+    bg: "linear-gradient(160deg,#e8f5e9,#f1f8e9)",
+    items: ["🌻","🌹","🌷","🌿","🍃","🦋","🐝","🌳","🍀","🌺","🐞","🌾","🍁","🌼","🐛","🌲","🍄","🌵","🦎","🐌"],
+    dadaaa: "👨‍🌾", dadaaaLabel: "Dadaaa the farmer!!"
+  },
+  {
+    label: "☕ Find Dadaaa at the café!!",
+    bg: "linear-gradient(160deg,#fff8e1,#ffecc7)",
+    items: ["☕","🧁","🍰","🥐","🍩","🫖","🧇","🍫","🥛","🍮","🎂","🥧","🧋","🍪","🥜","🫙","🥞","🍬","🎀","🌸"],
+    dadaaa: "🧑‍🍳", dadaaaLabel: "Dadaaa the chef!!"
+  },
+  {
+    label: "🏖️ Find Dadaaa at the beach!!",
+    bg: "linear-gradient(160deg,#e0f7fa,#b2ebf2)",
+    items: ["🐚","🦀","🌊","⛱️","🐠","🦞","🐙","🏄","⭐","🦈","🐡","🦭","🌴","🐟","🦑","🐬","🪸","🦐","🏝️","🌅"],
+    dadaaa: "🤿", dadaaaLabel: "Dadaaa the diver!!"
+  },
+  {
+    label: "🌙 Find Dadaaa in the night sky!!",
+    bg: "linear-gradient(160deg,#e8eaf6,#d1c4e9)",
+    items: ["⭐","🌟","💫","✨","🌙","🪐","🌠","☄️","🌌","🔭","🛸","🚀","🌛","💥","🌜","🌃","🌆","🌇","🌉","🌁"],
+    dadaaa: "👨‍🚀", dadaaaLabel: "Dadaaa the astronaut!!"
+  },
+  {
+    label: "🎪 Find Dadaaa at the fun fair!!",
+    bg: "linear-gradient(160deg,#fce4ec,#f8bbd0)",
+    items: ["🎡","🎢","🎪","🎠","🎈","🍭","🎯","🎰","🎟️","🃏","🎭","🤹","🎺","🥁","🎸","🎻","🎵","🎶","🎤","🎆"],
+    dadaaa: "🤡", dadaaaLabel: "Dadaaa the clown!! 💀"
+  }
+];
+
+let round = 0, score = 0, timer, timeLeft = 15, dadaaaPos = null;
+
+function startGame() {
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('game-screen').style.display = 'flex';
+  loadRound();
+}
+
+function loadRound() {
+  if (round >= ROUNDS.length) { endGame(); return; }
+  timeLeft = 15;
+  const r = ROUNDS[round];
+  document.getElementById('round-disp').textContent = round + 1;
+  document.getElementById('score-disp').textContent = score;
+  document.getElementById('time-disp').textContent = timeLeft + 's';
+  document.getElementById('round-label').textContent = r.label;
+
+  const scene = document.getElementById('scene');
+  scene.innerHTML = '';
+  scene.style.background = r.bg;
+
+  const W = window.innerWidth;
+  const H = document.getElementById('scene-wrap').offsetHeight;
+  const allItems = [...r.items];
+  // insert dadaaa at random position
+  const dadIdx = Math.floor(Math.random() * (allItems.length + 1));
+  allItems.splice(dadIdx, 0, '__DADAAA__');
+
+  const placed = [];
+  allItems.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'scene-item' + (item === '__DADAAA__' ? ' dadaaa-item' : '');
+    const sz = item === '__DADAAA__' ? (Math.random()*0.4+2) : (Math.random()*1.2+1.6);
+    el.style.setProperty('--sz', sz + 'rem');
+
+    let x, y, tries = 0;
+    do {
+      x = Math.random() * (W - 60) + 10;
+      y = Math.random() * (H - 60) + 10;
+      tries++;
+    } while(placed.some(p => Math.abs(p.x-x)<45 && Math.abs(p.y-y)<45) && tries < 30);
+    placed.push({x,y});
+
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+    el.textContent = item === '__DADAAA__' ? r.dadaaa : item;
+
+    if (item === '__DADAAA__') {
+      dadaaaPos = {x, y};
+      el.onclick = () => foundDadaaa(el, r.dadaaaLabel);
+    } else {
+      el.onclick = (e) => wrongTap(e);
+    }
+    scene.appendChild(el);
+  });
+
+  clearInterval(timer);
+  timer = setInterval(() => {
+    timeLeft--;
+    document.getElementById('time-disp').textContent = timeLeft + 's';
+    if (timeLeft <= 0) { clearInterval(timer); timeUp(); }
+  }, 1000);
+}
+
+function foundDadaaa(el, label) {
+  clearInterval(timer);
+  const timeBonus = timeLeft;
+  score += 10 + timeBonus;
+  document.getElementById('score-disp').textContent = score;
+
+  // ring effect
+  const ring = document.createElement('div');
+  ring.className = 'found-ring';
+  ring.style.left = (parseFloat(el.style.left) + 20) + 'px';
+  ring.style.top = (parseFloat(el.style.top) + 20) + 'px';
+  document.getElementById('scene').appendChild(ring);
+  setTimeout(() => ring.remove(), 500);
+
+  const pop = document.createElement('div');
+  pop.className = 'feedback-pop';
+  pop.innerHTML = `Found!! 🎉<br><span style="font-family:'Caveat',cursive;font-size:1.2rem;color:#c0607a">${label}<br>+${10+timeBonus} pts!! ⚡</span>`;
+  document.body.appendChild(pop);
+  setTimeout(() => { pop.remove(); round++; loadRound(); }, 1200);
+}
+
+function wrongTap(e) {
+  const pop = document.createElement('div');
+  pop.className = 'wrong-pop';
+  pop.textContent = 'Not Dadaaa!! 😭 Keep looking!!';
+  pop.style.left = (e.clientX - 80) + 'px';
+  pop.style.top = (e.clientY - 30) + 'px';
+  document.body.appendChild(pop);
+  setTimeout(() => pop.remove(), 700);
+}
+
+function timeUp() {
+  const pop = document.createElement('div');
+  pop.className = 'feedback-pop';
+  pop.innerHTML = `Too slow!! 😭<br><span style="font-family:'Caveat',cursive;font-size:1.1rem;color:#c0607a">Dadaaa escaped!! +0 pts</span>`;
+  document.body.appendChild(pop);
+  setTimeout(() => { pop.remove(); round++; loadRound(); }, 1200);
+}
+
+function endGame() {
+  clearInterval(timer);
+  document.getElementById('game-screen').style.display = 'none';
+  document.getElementById('end-screen').classList.remove('hidden');
+  document.getElementById('end-score').textContent = score + ' pts!! 💗';
+  const msgs = [
+    {min:0,   e:'😭', t:"You couldn't find Dadaaa at alllll!! 💀 Dadaaa is sad babyyyy"},
+    {min:20,  e:'🥺', t:"You found Dadaaa a little!! Keep practicing babyyyy 💗"},
+    {min:50,  e:'😍', t:"You found Dadaaa so well!! You always know where I am 🥹"},
+    {min:80,  e:'🎉', t:"AMAZINGGGG!! You found Dadaaa every time babyyyy 😭💗"},
+    {min:100, e:'👑', t:"PERFECTTTT!! You always find Dadaaa no matter where he hides 💍 kita harus menikah 😭"}
+  ];
+  const m = [...msgs].reverse().find(m => score >= m.min);
+  document.getElementById('end-msg').textContent = m.e + ' ' + m.t;
+}
+
+// BG stickers
+const stks=['🐻','🧸','🍓','🌸','⭐','🦋','💝','🎀','🍡','🌙','💫','🌷','💕','🎪','🌈'];
+const bg=document.getElementById('bg-stk');
+for(let i=0;i<14;i++){
+  const s=document.createElement('div');s.className='stk';
+  s.textContent=stks[Math.floor(Math.random()*stks.length)];
+  s.style.cssText=`left:${Math.random()*95}%;top:${Math.random()*95}%;--d:${(Math.random()*4+3).toFixed(1)}s;--r0:${(Math.random()*20-10).toFixed(0)}deg;--r1:${(Math.random()*20-10).toFixed(0)}deg;font-size:${(Math.random()*1+1.2).toFixed(1)}rem;animation-delay:${(Math.random()*3).toFixed(1)}s;z-index:0`;
+  bg.appendChild(s);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz time!! 🎮</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Pacifico&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:linear-gradient(135deg,#fff0f5,#f0f8ff,#fff8e1);min-height:100vh;font-family:'Nunito',sans-serif;display:flex;align-items:center;justify-content:center;padding:24px;overflow:hidden}
+.sticker-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.stk{position:absolute;animation:floatStk var(--dur) ease-in-out infinite alternate;opacity:0.15}
+@keyframes floatStk{0%{transform:translateY(0) rotate(var(--r0))}100%{transform:translateY(-15px) rotate(var(--r1))}}
+.card{position:relative;z-index:2;background:#fff;border-radius:28px;padding:36px 28px;max-width:480px;width:100%;box-shadow:0 8px 40px rgba(232,86,122,0.12);text-align:center}
+.chip{display:inline-block;background:#ffe0eb;color:#e8567a;font-size:0.68rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;padding:5px 14px;border-radius:99px;margin-bottom:12px}
+.title{font-family:'Pacifico',cursive;font-size:2rem;color:#e8567a;margin-bottom:6px;text-shadow:2px 2px 0 #ffc0cb}
+.subtitle{font-family:'Caveat',cursive;font-size:1.2rem;color:#c0607a;margin-bottom:28px}
+.progress{display:flex;gap:6px;justify-content:center;margin-bottom:24px;flex-wrap:wrap}
+.dot{width:10px;height:10px;border-radius:50%;background:#ffe0eb;transition:background 0.3s}
+.dot.done{background:#b5ead7}
+.dot.active{background:#e8567a}
+.question{font-family:'Caveat',cursive;font-size:1.35rem;color:#3a2a2a;margin-bottom:22px;min-height:56px;line-height:1.5}
+.options{display:grid;gap:10px}
+.opt{background:#fff9fb;border:2px solid #ffd6e3;border-radius:14px;padding:13px 18px;font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:600;color:#5a3a3a;cursor:pointer;transition:all 0.2s;text-align:left}
+.opt:hover{border-color:#e8567a;background:#fff0f5;transform:scale(1.02)}
+.opt.correct{border-color:#57cc99;background:#d8f3dc;color:#2d6a4f;pointer-events:none}
+.opt.wrong{border-color:#e8567a;background:#fff0f5;color:#c0607a;pointer-events:none}
+.opt.show-correct{border-color:#57cc99;background:#d8f3dc;color:#2d6a4f;pointer-events:none}
+.feedback{font-family:'Caveat',cursive;font-size:1.1rem;color:#e8567a;min-height:28px;margin:14px 0;opacity:0;transition:opacity 0.4s}
+.feedback.show{opacity:1}
+.next-btn{background:linear-gradient(135deg,#e8567a,#c04060);color:#fff;border:none;border-radius:14px;padding:13px 32px;font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:800;cursor:pointer;display:none;margin-top:4px;transition:transform 0.2s}
+.next-btn:hover{transform:scale(1.04)}
+.next-btn.show{display:inline-block}
+.result{display:none;text-align:center}
+.result-emoji{font-size:4rem;margin:8px 0;animation:bounce 0.8s ease infinite alternate}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-10px)}}
+.result-score{font-family:'Pacifico',cursive;font-size:3.5rem;color:#e8567a;margin:8px 0}
+.result-msg{font-family:'Caveat',cursive;font-size:1.25rem;color:#5a3a3a;line-height:1.7;margin:12px 0}
+</style>
+</head>
+<body>
+<div class="sticker-bg" id="stbg"></div>
+<div class="card">
+  <div id="qscreen">
+    <p class="chip">🎮 quiz time!!</p>
+    <h1 class="title">How well do you know Dadaaa??</h1>
+    <p class="subtitle">Let's seeee babyyyy 👀💗</p>
+    <div class="progress" id="progress"></div>
+    <p class="question" id="question"></p>
+    <div class="options" id="options"></div>
+    <p class="feedback" id="feedback"></p>
+    <button class="next-btn" id="next-btn">Next one!! →</button>
+  </div>
+  <div class="result" id="rscreen">
+    <p class="chip">🎉 your result!!</p>
+    <div class="result-emoji" id="remoji"></div>
+    <div class="result-score" id="rscore"></div>
+    <p class="result-msg" id="rmsg"></p>
+    <p style="font-family:'Pacifico',cursive;font-size:1.4rem;color:#e8829a;margin-top:16px">Dadaaa loves youuu 💗</p>
+  </div>
+</div>
+
+<script>
+const Qs=[
+  {q:"Where did Dadaaa first find youuu?? 🥹",opts:["Instagram","Facebook","Slowly 💌","TikTok"],a:2,win:"Yesss!! Slowly!! One message changed everythinggg 💗",lose:"Noooo baby it was SLOWLY!! That's literally our whole story 😭"},
+  {q:"What does Meena say instead of 'honest'?? 😭",opts:["Honust","Hunest","Haunes 💀","Hanest"],a:2,win:"HAUNES 😭💀 I love you SO much for this please never change",lose:"It's HAUNES babyyyy 💀 you literally invented your own language"},
+  {q:"When Meena pampers Dadaaa, what does Dadaaa feel?? 🥹",opts:["Sleepy 😴","It's his HAPPY PLACE 💗","Embarrassed 😅","Hungry 😂"],a:1,win:"YESSS that's Dadaaa's happy placeee 🥹 keep pampering me foreverrr",lose:"Baby it's Dadaaa's HAPPY PLACE 🥹 those vns are everything to me"},
+  {q:"What does Dadaaa always say about our future?? 💍",opts:["We should travel","Kita harus menikah 💍","Let's get a cat","One day maybe"],a:1,win:"KITA HARUS MENIKAH 💍😭 yes yes yes that's the plannn!!",lose:"KITA HARUS MENIKAH babyyyy 💍 how did you not know this 😭"},
+  {q:"What does Dadaaa want to do to Meena's cheeks?? 😭",opts:["Pinch them","Take a photo","BITE THEM 😭","Kiss them"],a:2,win:"BITE YOUR CUTIE PATOOTIE CHEEKS 😭 they're too cute it's illegal!!",lose:"BITE THEM 😭 your chubby cutie patootie cheeks are deadly babyyyy"},
+  {q:"What's Dadaaa's favourite sound in the world?? 🥹",opts:["Rain 🌧️","Music 🎵","Meena's giggle 💗","Silence"],a:2,win:"Your giggle babyyyy 😭💗 it literally fixes EVERYTHING",lose:"YOUR GIGGLEEE 💗 I would do anything to hear that every day"},
+  {q:"How many years has Dadaaa been in love with youuu?? 💗",opts:["1 year","2 years","3 years 🥹","4 years"],a:2,win:"3 YEARS 🥹 and every single day I fall more in love with youuu",lose:"3 YEARSSSS babyyyy!! June 10 2023 remember that date 💗"}
+];
+
+let cur=0,score=0,done=false;
+function buildProg(){
+  const p=document.getElementById('progress');p.innerHTML='';
+  Qs.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i<cur?' done':i===cur?' active':'');p.appendChild(d)});
+}
+function load(){
+  done=false;
+  const q=Qs[cur];
+  document.getElementById('question').textContent=q.q;
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('next-btn').className='next-btn';
+  buildProg();
+  const o=document.getElementById('options');o.innerHTML='';
+  q.opts.forEach((opt,i)=>{
+    const b=document.createElement('button');b.className='opt';b.textContent=opt;
+    b.onclick=()=>pick(i);o.appendChild(b);
+  });
+}
+function pick(i){
+  if(done)return;done=true;
+  const q=Qs[cur];
+  document.querySelectorAll('.opt').forEach((b,idx)=>{
+    if(idx===q.a)b.classList.add('correct');
+    else if(idx===i&&i!==q.a)b.classList.add('wrong');
+    else b.classList.add('show-correct');
+  });
+  if(i===q.a)score++;
+  const fb=document.getElementById('feedback');
+  fb.textContent=i===q.a?q.win:q.lose;
+  fb.className='feedback show';
+  document.getElementById('next-btn').className='next-btn show';
+}
+document.getElementById('next-btn').onclick=()=>{cur++;cur>=Qs.length?showResult():load()};
+function showResult(){
+  document.getElementById('qscreen').style.display='none';
+  const r=document.getElementById('rscreen');r.style.display='block';
+  document.getElementById('rscore').textContent=score+' / '+Qs.length;
+  const data=[
+    {e:'😭',m:"Babyyyy you don't know Dadaaa at alllll 💀 we need to talk lmaooo"},
+    {e:'🥺',m:"Hmm okayy a few righttt 😅 Dadaaa needs more of your attentionnn"},
+    {e:'😌',m:"Not bad not badd!! Dadaaa is kind of prouddd of youuu 💗"},
+    {e:'🥹',m:"Awww you were paying attention!! Dadaaa loves youuu 💗"},
+    {e:'😍',m:"Almost perfectttt!! You know Dadaaa so welll babyyyy 🥹"},
+    {e:'🎉',m:"PERFECT SCORE 😭🎉 You know EVERYTHING!! I love you so so muchhh Baby Meenaaaa 💗💗💗"}
+  ];
+  const idx=Math.min(Math.floor(score/Qs.length*data.length),data.length-1);
+  document.getElementById('remoji').textContent=data[idx].e;
+  document.getElementById('rmsg').textContent=data[idx].m;
+}
+
+// stickers
+const stks=['🐻','🧸','🍓','🌸','⭐','🦋','🍰','💝','🎀','✨','🍡','🌙','💫','🐣','🌷','💕','🎪','🌈'];
+const bg=document.getElementById('stbg');
+for(let i=0;i<20;i++){
+  const s=document.createElement('div');s.className='stk';
+  s.textContent=stks[Math.floor(Math.random()*stks.length)];
+  s.style.cssText=`left:${Math.random()*95}%;top:${Math.random()*95}%;--dur:${(Math.random()*4+3).toFixed(1)}s;--r0:${(Math.random()*30-15).toFixed(0)}deg;--r1:${(Math.random()*30-15).toFixed(0)}deg;font-size:${(Math.random()*1.5+1.5).toFixed(1)}rem;animation-delay:${(Math.random()*3).toFixed(1)}s`;
+  bg.appendChild(s);
+}
+load();
+</script>
+</body>
+</html>

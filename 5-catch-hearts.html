@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Catch Dadaaa's Hearts!! 💗</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Pacifico&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:linear-gradient(160deg,#fff0f5,#fde8f0,#fff5e6);font-family:'Nunito',sans-serif;overflow:hidden;height:100vh;width:100vw;user-select:none}
+
+/* BG stickers */
+.stk{position:fixed;font-size:1.6rem;opacity:0.1;animation:floatS var(--d) ease-in-out infinite alternate;pointer-events:none}
+@keyframes floatS{0%{transform:translateY(0) rotate(var(--r0))}100%{transform:translateY(-14px) rotate(var(--r1))}}
+
+/* SCREENS */
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center;transition:opacity 0.4s}
+.screen.hidden{opacity:0;pointer-events:none}
+
+/* START */
+#start-screen{}
+.game-title{font-family:'Pacifico',cursive;font-size:clamp(2rem,9vw,3.5rem);color:#e8567a;text-shadow:3px 3px 0 #ffc0cb;margin-bottom:10px}
+.game-sub{font-family:'Caveat',cursive;font-size:1.3rem;color:#c0607a;margin-bottom:32px;line-height:1.5}
+.big-emoji{font-size:5rem;animation:bounce 1s ease-in-out infinite alternate;display:block;margin-bottom:20px}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-14px)}}
+.start-btn{background:linear-gradient(135deg,#e8567a,#c04060);color:#fff;border:none;border-radius:99px;padding:16px 48px;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(232,86,122,0.35);transition:transform 0.2s;letter-spacing:0.05em}
+.start-btn:active{transform:scale(0.95)}
+.diff-row{display:flex;gap:10px;justify-content:center;margin-bottom:24px}
+.diff-btn{background:#fff;border:2px solid #ffd6e3;border-radius:99px;padding:10px 22px;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:800;color:#e8567a;cursor:pointer;transition:all 0.2s}
+.diff-btn.active{background:#e8567a;color:#fff;border-color:#e8567a}
+
+/* GAME CANVAS AREA */
+#game-screen{padding:0}
+#game-canvas{position:fixed;inset:0;width:100%;height:100%}
+
+/* HUD */
+#hud{position:fixed;top:0;left:0;right:0;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;z-index:10;background:rgba(255,240,245,0.85);backdrop-filter:blur(6px);border-bottom:2px solid #ffd6e3}
+.hud-score{font-family:'Pacifico',cursive;font-size:1.3rem;color:#e8567a}
+.hud-lives{font-size:1.3rem;letter-spacing:2px}
+.hud-time{font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;color:#c0607a;background:#ffe0eb;padding:4px 12px;border-radius:99px}
+
+/* BASKET */
+#basket{position:fixed;bottom:40px;font-size:3rem;transform:translateX(-50%);transition:left 0.05s linear;z-index:5;filter:drop-shadow(0 4px 8px rgba(232,86,122,0.3))}
+
+/* FALLING ITEMS */
+.item{position:fixed;font-size:2rem;z-index:4;transition:none;pointer-events:none}
+
+/* SCORE POPUP */
+.score-pop{position:fixed;font-family:'Pacifico',cursive;font-size:1.4rem;color:#e8567a;z-index:20;pointer-events:none;animation:popUp 0.8s ease forwards}
+@keyframes popUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-60px) scale(1.3)}}
+
+/* MISS POPUP */
+.miss-pop{position:fixed;font-family:'Caveat',cursive;font-size:1.1rem;color:#c04060;z-index:20;pointer-events:none;animation:popUp 0.7s ease forwards}
+
+/* END SCREEN */
+#end-screen{z-index:30}
+.end-title{font-family:'Pacifico',cursive;font-size:2.5rem;color:#e8567a;text-shadow:3px 3px 0 #ffc0cb;margin-bottom:8px}
+.end-score{font-family:'Pacifico',cursive;font-size:4rem;color:#e8567a;margin:8px 0}
+.end-msg{font-family:'Caveat',cursive;font-size:1.25rem;color:#5a3a3a;line-height:1.7;margin:12px 0;max-width:320px}
+.end-love{font-family:'Pacifico',cursive;font-size:1.3rem;color:#e8829a;margin-top:12px}
+.replay-btn{background:linear-gradient(135deg,#e8567a,#c04060);color:#fff;border:none;border-radius:99px;padding:14px 40px;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;cursor:pointer;margin-top:20px;box-shadow:0 6px 20px rgba(232,86,122,0.3)}
+.heart-anim{font-size:3rem;display:inline-block;animation:hb 1.2s ease infinite}
+@keyframes hb{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+</style>
+</head>
+<body>
+
+<!-- BG stickers -->
+<div id="bg-stk"></div>
+
+<!-- START -->
+<div class="screen" id="start-screen">
+  <span class="big-emoji">💗</span>
+  <h1 class="game-title">Catch Dadaaa's Hearts!!</h1>
+  <p class="game-sub">Dadaaa is throwing his love down to youuu 🥹<br>Catch as many as you can babyyyy!<br>Don't let them fall!! 💗</p>
+  <p style="font-family:'Caveat',cursive;font-size:1rem;color:#c0a0b0;margin-bottom:14px">choose difficulty:</p>
+  <div class="diff-row">
+    <button class="diff-btn active" id="d-easy" onclick="setDiff('easy')">Easy 🥺</button>
+    <button class="diff-btn" id="d-hard" onclick="setDiff('hard')">Hard 💀</button>
+  </div>
+  <button class="start-btn" onclick="startGame()">Let's gooo!! 💗</button>
+</div>
+
+<!-- HUD -->
+<div id="hud" style="display:none">
+  <div class="hud-score">💗 <span id="score-display">0</span></div>
+  <div class="hud-time" id="time-display">30s</div>
+  <div class="hud-lives" id="lives-display">❤️❤️❤️</div>
+</div>
+
+<!-- BASKET -->
+<div id="basket">🧺</div>
+
+<!-- GAME CANVAS -->
+<div id="game-screen" class="screen hidden"></div>
+
+<!-- END -->
+<div class="screen hidden" id="end-screen">
+  <div class="end-title">Time's up!! 🎉</div>
+  <div class="heart-anim">💗</div>
+  <div class="end-score" id="end-score">0</div>
+  <p class="end-msg" id="end-msg"></p>
+  <p class="end-love">Dadaaa loves youuu 🤍</p>
+  <button class="replay-btn" onclick="resetGame()">Play again!! 🔄</button>
+</div>
+
+<script>
+// Config
+let diff = 'easy';
+let score = 0, lives = 3, timeLeft = 30, gameActive = false;
+let items = [], spawnInterval, timerInterval, moveInterval;
+let basketX = window.innerWidth / 2;
+const BASKET_W = 80;
+const BASKET_H = 60;
+const BASKET_Y = window.innerHeight - 80;
+
+const hearts = ['💗','💖','💝','💕','💓','🌸','⭐','✨'];
+const bombs  = ['💀','🌧️','😤'];
+
+const msgs = [
+  {min:0,  max:10,  e:'😭', t:"Babyyyy you dropped all of Dadaaa's loveee!! Come on try again 💗"},
+  {min:10, max:25,  e:'🥺', t:"Not bad not bad!! Dadaaa's love is reaching youuu slowly 🥹"},
+  {min:25, max:40,  e:'😍', t:"Wowwww you caught so many!! Dadaaa is so prouddd 💗"},
+  {min:40, max:60,  e:'🎉', t:"AMAZING babyyyy!! You caught almost all of Dadaaa's heartsss 😭💗"},
+  {min:60, max:999, e:'👑', t:"PERFECTTTT!! You caught EVERYTHING!! Dadaaa's whole heart is yours babyyyy 💍😭"}
+];
+
+function setDiff(d) {
+  diff = d;
+  document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('d-' + d).classList.add('active');
+}
+
+function startGame() {
+  score = 0; lives = 3; timeLeft = 30; items = [];
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('end-screen').classList.add('hidden');
+  document.getElementById('hud').style.display = 'flex';
+  document.getElementById('basket').style.display = 'block';
+  gameActive = true;
+  updateHUD();
+
+  const spawnRate = diff === 'easy' ? 900 : 500;
+  spawnInterval = setInterval(spawnItem, spawnRate);
+  timerInterval = setInterval(tick, 1000);
+  moveInterval  = setInterval(moveItems, 16);
+}
+
+function tick() {
+  timeLeft--;
+  updateHUD();
+  if (timeLeft <= 0) endGame();
+}
+
+function spawnItem() {
+  if (!gameActive) return;
+  const isBomb = Math.random() < (diff === 'easy' ? 0.12 : 0.22);
+  const el = document.createElement('div');
+  el.className = 'item';
+  const pool = isBomb ? bombs : hearts;
+  el.textContent = pool[Math.floor(Math.random() * pool.length)];
+  el.style.left = (Math.random() * (window.innerWidth - 50)) + 'px';
+  el.style.top = '-40px';
+  const speed = diff === 'easy' ? (Math.random() * 2 + 2.5) : (Math.random() * 3 + 4);
+  document.body.appendChild(el);
+  items.push({el, y: -40, speed, isBomb});
+}
+
+function moveItems() {
+  if (!gameActive) return;
+  items = items.filter(item => {
+    item.y += item.speed;
+    item.el.style.top = item.y + 'px';
+    const ix = parseFloat(item.el.style.left) + 16;
+    const inX = ix > basketX - BASKET_W/2 && ix < basketX + BASKET_W/2;
+    const inY = item.y + 30 > BASKET_Y && item.y < BASKET_Y + BASKET_H;
+    if (inX && inY) {
+      // caught!
+      if (item.isBomb) {
+        lives = Math.max(0, lives - 1);
+        showPop('💥 -1 life!!', item.el.style.left, item.y, true);
+        if (lives === 0) { item.el.remove(); endGame(); return false; }
+      } else {
+        score++;
+        showPop('+1 💗', item.el.style.left, item.y, false);
+      }
+      item.el.remove(); updateHUD(); return false;
+    }
+    if (item.y > window.innerHeight + 10) {
+      if (!item.isBomb) {
+        lives = Math.max(0, lives - 1);
+        showPop('Missed!! 😭', item.el.style.left, window.innerHeight - 60, true);
+        if (lives === 0) { item.el.remove(); endGame(); return false; }
+        updateHUD();
+      }
+      item.el.remove(); return false;
+    }
+    return true;
+  });
+}
+
+function showPop(text, x, y, isMiss) {
+  const p = document.createElement('div');
+  p.className = isMiss ? 'miss-pop' : 'score-pop';
+  p.textContent = text;
+  p.style.left = x; p.style.top = y + 'px';
+  document.body.appendChild(p);
+  setTimeout(() => p.remove(), 800);
+}
+
+function updateHUD() {
+  document.getElementById('score-display').textContent = score;
+  document.getElementById('time-display').textContent = timeLeft + 's';
+  const hearts_str = ['','❤️','❤️❤️','❤️❤️❤️'];
+  document.getElementById('lives-display').textContent = hearts_str[lives] || '';
+}
+
+function endGame() {
+  gameActive = false;
+  clearInterval(spawnInterval); clearInterval(timerInterval); clearInterval(moveInterval);
+  items.forEach(i => i.el.remove()); items = [];
+  document.getElementById('hud').style.display = 'none';
+  document.getElementById('basket').style.display = 'none';
+  const m = msgs.find(m => score >= m.min && score < m.max) || msgs[msgs.length-1];
+  document.getElementById('end-score').textContent = score + ' 💗';
+  document.getElementById('end-msg').textContent = m.e + ' ' + m.t;
+  document.getElementById('end-screen').classList.remove('hidden');
+}
+
+function resetGame() {
+  document.getElementById('end-screen').classList.add('hidden');
+  document.getElementById('start-screen').classList.remove('hidden');
+}
+
+// Basket movement - touch & mouse
+document.addEventListener('touchmove', e => {
+  e.preventDefault();
+  basketX = e.touches[0].clientX;
+  document.getElementById('basket').style.left = basketX + 'px';
+}, {passive: false});
+document.addEventListener('mousemove', e => {
+  basketX = e.clientX;
+  document.getElementById('basket').style.left = basketX + 'px';
+});
+document.getElementById('basket').style.left = basketX + 'px';
+document.getElementById('basket').style.display = 'none';
+
+// BG stickers
+const stks = ['🐻','🧸','🍓','🌸','⭐','🦋','💝','🎀','🍡','🌙','💫','🌷','💕'];
+const bg = document.getElementById('bg-stk');
+for(let i=0;i<16;i++){
+  const s=document.createElement('div');s.className='stk';
+  s.textContent=stks[Math.floor(Math.random()*stks.length)];
+  s.style.cssText=`left:${Math.random()*95}%;top:${Math.random()*95}%;--d:${(Math.random()*4+3).toFixed(1)}s;--r0:${(Math.random()*20-10).toFixed(0)}deg;--r1:${(Math.random()*20-10).toFixed(0)}deg;font-size:${(Math.random()*1.2+1.2).toFixed(1)}rem;animation-delay:${(Math.random()*3).toFixed(1)}s`;
+  bg.appendChild(s);
+}
+</script>
+</body>
+</html>
